@@ -28,9 +28,7 @@ export async function POST(req: Request) {
 
   const { priceId, mode, pageId, successPath, cancelPath } = parsed.data;
 
-  const stripe = new Stripe(STRIPE_SECRET_KEY, {
-    apiVersion: "2024-11-20.acacia",
-  });
+  const stripe = new Stripe(STRIPE_SECRET_KEY);
 
   try {
     const session = await stripe.checkout.sessions.create({
