@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
