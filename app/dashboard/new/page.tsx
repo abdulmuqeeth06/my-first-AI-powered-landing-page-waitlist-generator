@@ -1,38 +1,61 @@
 "use client";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+import { useState } from "react";
+import { getSupabaseClient } from "@/lib/supabase";
 
-import { supabase } from "@/lib/supabaseBrowser";
+export default function NewLandingPage() {
+  const supabase = getSupabaseClient();
 
-export default function NewPage() {
-  async function save() {
+  const [productName, setProductName] = useState("");
+  const [headline, setHeadline] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSave = async () => {
+    setError(null);
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) {
-      alert("Not logged in");
+      setError("Not authenticated");
       return;
     }
 
-    const { error } = await supabase.from("landing_pages").insert([
-      {
-        user_id: user.id,
-        product_name: "Test",
-        description: "Test",
-        audience: "Test",
-        pricing: "one-time",
-        slug: "test-" + Date.now(),
-        headline: "Coming soon",
-        subheadline: "Launching shortly",
-        benefits: ["Fast"],
-      },
-    ]);
+    const { error } = await supabase.from("landing_pages").insert({
+      user_id: user.id,
+      product_name: productName,
+      headline,
+    });
 
-    if (error) alert(error.message);
-    else alert("Saved");
-  }
+    if (error) {
+      setError(error.message);
+    } else {
+      alert("Saved");
+    }
+  };
 
-  return <button onClick={save}>Save</button>;
+  return (
+    <div style={{ padding: 40 }}>
+      <h1>New Landing Page</h1>
+
+      <input
+        placeholder="Product name"
+        value={productName}
+        onChange={(e) => setProductName(e.target.value)}
+      />
+      <br />
+
+      <input
+        placeholder="Headline"
+        value={headline}
+        onChange={(e) => setHeadline(e.target.value)}
+      />
+      <br />
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <button onClick={handleSave}>Save</button>
+    </div>
+  );
 }

@@ -1,75 +1,67 @@
 "use client";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { getSupabaseClient } from "@/lib/supabase";
 
 export default function LoginPage() {
+  const supabase = getSupabaseClient();
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signup" | "login">("signup");
+  const [mode, setMode] = useState<"login" | "signup">("login");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  async function submit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setError(null);
 
-    const fn =
-      mode === "signup"
-        ? supabase.auth.signUp
-        : supabase.auth.signInWithPassword;
+    const result =
+      mode === "login"
+        ? await supabase.auth.signInWithPassword({ email, password })
+        : await supabase.auth.signUp({ email, password });
 
-    const { error } = await fn({ email, password });
-
-    if (error) {
-      setError(error.message);
-      return;
+    if (result.error) {
+      setError(result.error.message);
+    } else {
+      router.push("/dashboard");
     }
 
-    router.push("/dashboard/new");
-  }
+    setLoading(false);
+  };
 
   return (
-    <form onSubmit={submit} style={{ padding: 40 }}>
-      <h2>{mode === "signup" ? "Sign up" : "Login"}</h2>
+    <div style={{ padding: 40 }}>
+      <h1>{mode === "login" ? "Login" : "Sign up"}</h1>
 
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <form onSubmit={handleSubmit}>
+        <input
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <br />
+        <input
+          placeholder="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
 
-      <br />
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <input
-        placeholder="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <button disabled={loading}>
+          {loading ? "Working..." : mode === "login" ? "Login" : "Sign up"}
+        </button>
+      </form>
 
-      <br />
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <button type="submit">
-        {mode === "signup" ? "Create account" : "Login"}
+      <button onClick={() => setMode(mode === "login" ? "signup" : "login")}>
+        Switch to {mode === "login" ? "Signup" : "Login"}
       </button>
-
-      <br />
-
-      <button
-        type="button"
-        onClick={() =>
-          setMode(mode === "signup" ? "login" : "signup")
-        }
-      >
-        Switch to {mode === "signup" ? "login" : "signup"}
-      </button>
-    </form>
+    </div>
   );
 }
