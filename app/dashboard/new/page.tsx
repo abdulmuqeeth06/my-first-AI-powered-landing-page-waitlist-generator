@@ -17,41 +17,50 @@ export default function NewLandingPage() {
   const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
-    setError(null);
-    setLoading(true);
+  setError(null);
+  setLoading(true);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    if (!user) {
-      setError("Not authenticated");
-      setLoading(false);
-      return;
-    }
-
-    const { error } = await supabase.from("landing_pages").insert({
-      user_id: user.id,
-      product_name: productName,
-      description,
-      audience,
-      headline,
-      pricing,
-    });
-
+  if (!user) {
+    setError("Not authenticated");
     setLoading(false);
+    return;
+  }
 
-    if (error) {
-      setError(error.message);
-    } else {
-      alert("Landing page saved");
-      setProductName("");
-      setDescription("");
-      setAudience("");
-      setHeadline("");
-      setPricing("");
-    }
-  };
+  // 🔥 AUTO-GENERATE SLUG (THIS FIXES EVERYTHING)
+  const slug = productName
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+
+  const { error } = await supabase.from("landing_pages").insert({
+    user_id: user.id,
+    product_name: productName,
+    description,
+    audience,
+    headline,
+    pricing,
+    slug, // ✅ THIS WAS MISSING
+    benefits: [], // safe default
+  });
+
+  setLoading(false);
+
+  if (error) {
+    setError(error.message);
+  } else {
+    alert("Landing page saved");
+    setProductName("");
+    setDescription("");
+    setAudience("");
+    setHeadline("");
+    setPricing("");
+  }
+};
 
   return (
     <div style={{ padding: 40, maxWidth: 600 }}>
