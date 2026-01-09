@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 
 type GeneratedCopy = {
@@ -14,7 +14,6 @@ type GeneratedCopy = {
 };
 
 export default function NewLandingPage() {
-  const supabase = createSupabaseBrowserClient();
   const router = useRouter();
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
