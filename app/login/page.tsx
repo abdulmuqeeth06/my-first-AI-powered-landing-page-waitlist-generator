@@ -2,18 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSupabaseBrowserClient } from "@/lib/supabaseBrowser";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
-  const supabase = getSupabaseBrowserClient();
   const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"login" | "signup">("signup");
+  const [mode, setMode] = useState<"signup" | "login">("signup");
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
@@ -33,38 +31,42 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="w-96 space-y-4">
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2 w-full"
-        />
-        <input
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2 w-full"
-        />
+    <form onSubmit={submit} style={{ padding: 40 }}>
+      <h2>{mode === "signup" ? "Sign up" : "Login"}</h2>
 
-        {error && <p className="text-red-500">{error}</p>}
+      <input
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-        <button className="bg-black text-white p-2 w-full">
-          {mode === "signup" ? "Sign up" : "Login"}
-        </button>
+      <br />
 
-        <button
-          type="button"
-          className="text-sm underline"
-          onClick={() =>
-            setMode(mode === "signup" ? "login" : "signup")
-          }
-        >
-          Switch to {mode === "signup" ? "login" : "signup"}
-        </button>
-      </form>
-    </main>
+      <input
+        placeholder="Password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <br />
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <button type="submit">
+        {mode === "signup" ? "Create account" : "Login"}
+      </button>
+
+      <br />
+
+      <button
+        type="button"
+        onClick={() =>
+          setMode(mode === "signup" ? "login" : "signup")
+        }
+      >
+        Switch to {mode === "signup" ? "login" : "signup"}
+      </button>
+    </form>
   );
 }
