@@ -15,7 +15,7 @@ type GeneratedCopy = {
 };
 
 export default function NewLandingPage() {
-      const supabase = useMemo(() => getSupabaseBrowserClient(), []);
+  const supabase = getSupabaseBrowserClient();
   const router = useRouter();
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");

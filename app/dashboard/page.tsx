@@ -27,7 +27,7 @@ type LandingPage = {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const supabase = useMemo(() => getSupabaseBrowserClient(), []);
+  const supabase = getSupabaseBrowserClient();
   const [loading, setLoading] = useState(true);
   const [pages, setPages] = useState<LandingPage[]>([]);
   const [error, setError] = useState<string | null>(null);

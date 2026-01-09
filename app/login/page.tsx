@@ -7,7 +7,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
-    const supabase = useMemo(() => getSupabaseBrowserClient(), []);
+  const supabase = getSupabaseBrowserClient();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
