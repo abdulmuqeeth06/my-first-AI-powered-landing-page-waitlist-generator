@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
@@ -25,7 +25,6 @@ type LandingPage = {
 };
 
 export default function DashboardPage() {
-  const supabase = createSupabaseBrowserClient();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [pages, setPages] = useState<LandingPage[]>([]);
