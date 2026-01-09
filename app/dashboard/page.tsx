@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseBrowserClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
@@ -27,6 +27,7 @@ type LandingPage = {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const supabase = getSupabaseBrowserClient();
   const [loading, setLoading] = useState(true);
   const [pages, setPages] = useState<LandingPage[]>([]);
   const [error, setError] = useState<string | null>(null);

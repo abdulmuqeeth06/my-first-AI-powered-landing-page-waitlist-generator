@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseBrowserClient } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 
 type GeneratedCopy = {
@@ -16,6 +16,7 @@ type GeneratedCopy = {
 
 export default function NewLandingPage() {
   const router = useRouter();
+  const supabase = getSupabaseBrowserClient();
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
   const [audience, setAudience] = useState("");
