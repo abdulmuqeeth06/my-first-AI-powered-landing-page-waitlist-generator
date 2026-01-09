@@ -10,52 +10,59 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<"login" | "signup">("signup");
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const fn =
+      mode === "signup"
+        ? supabase.auth.signUp
+        : supabase.auth.signInWithPassword;
 
-    setLoading(false);
+    const { error } = await fn({ email, password });
 
     if (error) {
       setError(error.message);
-    } else {
-      router.push("/dashboard");
+      return;
     }
-  };
+
+    router.push("/dashboard/new");
+  }
 
   return (
     <main className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleLogin} className="w-96 space-y-4">
+      <form onSubmit={handleSubmit} className="w-96 space-y-4">
         <input
-          type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border p-2"
+          className="border p-2 w-full"
         />
         <input
-          type="password"
           placeholder="Password"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-2"
+          className="border p-2 w-full"
         />
+
         {error && <p className="text-red-500">{error}</p>}
+
+        <button className="bg-black text-white p-2 w-full">
+          {mode === "signup" ? "Sign up" : "Login"}
+        </button>
+
         <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black text-white p-2"
+          type="button"
+          className="text-sm underline"
+          onClick={() =>
+            setMode(mode === "signup" ? "login" : "signup")
+          }
         >
-          {loading ? "Loading..." : "Login"}
+          Switch to {mode === "signup" ? "login" : "signup"}
         </button>
       </form>
     </main>
