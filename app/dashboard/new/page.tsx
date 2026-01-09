@@ -11,6 +11,7 @@ export default function NewLandingPage() {
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
   const [headline, setHeadline] = useState("");
+  const [audience, setAudience] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +34,7 @@ export default function NewLandingPage() {
       product_name: productName,
       description,
       headline,
+      audience,
     });
 
     setLoading(false);
@@ -44,6 +46,7 @@ export default function NewLandingPage() {
       setProductName("");
       setDescription("");
       setHeadline("");
+      setAudience("");
     }
   };
 
@@ -62,6 +65,13 @@ export default function NewLandingPage() {
         placeholder="Short description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+      />
+      <br />
+
+      <input
+        placeholder="Target audience (e.g. Gen Z founders)"
+        value={audience}
+        onChange={(e) => setAudience(e.target.value)}
       />
       <br />
 
