@@ -10,8 +10,9 @@ export default function NewLandingPage() {
 
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
-  const [headline, setHeadline] = useState("");
   const [audience, setAudience] = useState("");
+  const [headline, setHeadline] = useState("");
+  const [pricing, setPricing] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -33,8 +34,9 @@ export default function NewLandingPage() {
       user_id: user.id,
       product_name: productName,
       description,
-      headline,
       audience,
+      headline,
+      pricing,
     });
 
     setLoading(false);
@@ -45,8 +47,9 @@ export default function NewLandingPage() {
       alert("Landing page saved");
       setProductName("");
       setDescription("");
-      setHeadline("");
       setAudience("");
+      setHeadline("");
+      setPricing("");
     }
   };
 
@@ -79,6 +82,13 @@ export default function NewLandingPage() {
         placeholder="Headline"
         value={headline}
         onChange={(e) => setHeadline(e.target.value)}
+      />
+      <br />
+
+      <input
+        placeholder="Pricing (e.g. Free, $29/mo, One-time $49)"
+        value={pricing}
+        onChange={(e) => setPricing(e.target.value)}
       />
       <br />
 
