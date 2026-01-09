@@ -2,8 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-background text-foreground;
+html, body {
+  background: radial-gradient(1200px 800px at top, #111827, #05070c);
+  color: #e5e7eb;
 }
 
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
 
+.glow {
+  box-shadow: 0 0 40px rgba(59,130,246,0.15);
+}

@@ -1,4 +1,5 @@
-import "../styles/globals.css";
+import "./globals.css";
+import AnimatedLayout from "@/components/ui/animated-layout";
 
 export default function RootLayout({
   children,
@@ -7,7 +8,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AnimatedLayout>{children}</AnimatedLayout>
+      </body>
     </html>
   );
 }

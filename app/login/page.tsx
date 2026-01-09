@@ -67,3 +67,4 @@ export default function LoginPage() {
     </div>
   );
 }
+<div className="os-bg" />

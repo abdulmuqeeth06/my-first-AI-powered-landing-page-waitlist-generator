@@ -1,111 +1,63 @@
 "use client";
 
-export const dynamic = "force-dynamic";
+import Sidebar from "@/components/ui/sidebar";
+import StatCard from "@/components/ui/stat-card";
+import GlassCard from "@/components/ui/glass-card";
+import { stats, recentPage } from "@/lib/mock";
+import { motion } from "framer-motion";
 
-import { useState } from "react";
-import { getSupabaseClient } from "@/lib/supabase";
-
-export default function NewLandingPage() {
-  const supabase = getSupabaseClient();
-
-  const [productName, setProductName] = useState("");
-  const [description, setDescription] = useState("");
-  const [audience, setAudience] = useState("");
-  const [headline, setHeadline] = useState("");
-  const [pricing, setPricing] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleSave = async () => {
-  setError(null);
-  setLoading(true);
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    setError("Not authenticated");
-    setLoading(false);
-    return;
-  }
-
-  // 🔥 AUTO-GENERATE SLUG (THIS FIXES EVERYTHING)
-  const slug = productName
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
-
-  const { error } = await supabase.from("landing_pages").insert({
-    user_id: user.id,
-    product_name: productName,
-    description,
-    audience,
-    headline,
-    pricing,
-    slug, // ✅ THIS WAS MISSING
-    benefits: [], // safe default
-  });
-
-  setLoading(false);
-
-  if (error) {
-    setError(error.message);
-  } else {
-    alert("Landing page saved");
-    setProductName("");
-    setDescription("");
-    setAudience("");
-    setHeadline("");
-    setPricing("");
-  }
-};
-
+export default function Dashboard() {
   return (
-    <div style={{ padding: 40, maxWidth: 600 }}>
-      <h1>New Landing Page</h1>
+    <div className="min-h-screen relative overflow-hidden">
+      <Sidebar />
 
-      <input
-        placeholder="Product name"
-        value={productName}
-        onChange={(e) => setProductName(e.target.value)}
-      />
-      <br />
+      <main className="ml-[320px] p-12 space-y-12">
+        {/* HEADER */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1 className="text-4xl font-semibold">Overview</h1>
+          <p className="text-gray-400 mt-2">
+            Everything you’re building, at a glance.
+          </p>
+        </motion.div>
 
-      <textarea
-        placeholder="Short description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <br />
+        {/* STATS */}
+        <div className="grid grid-cols-4 gap-6">
+          {stats.map((s) => (
+            <StatCard key={s.label} {...s} />
+          ))}
+        </div>
 
-      <input
-        placeholder="Target audience (e.g. Gen Z founders)"
-        value={audience}
-        onChange={(e) => setAudience(e.target.value)}
-      />
-      <br />
+        {/* HERO CARD */}
+        <GlassCard>
+          <h2 className="text-xl font-semibold mb-4">Latest Landing Page</h2>
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-lg">{recentPage.name}</p>
+              <p className="text-sm text-gray-400">
+                Created {recentPage.createdAt}
+              </p>
+            </div>
+            <span className="px-4 py-2 rounded-full bg-green-500/10 text-green-400">
+              {recentPage.status}
+            </span>
+          </div>
 
-      <input
-        placeholder="Headline"
-        value={headline}
-        onChange={(e) => setHeadline(e.target.value)}
-      />
-      <br />
-
-      <input
-        placeholder="Pricing (e.g. Free, $29/mo, One-time $49)"
-        value={pricing}
-        onChange={(e) => setPricing(e.target.value)}
-      />
-      <br />
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <button onClick={handleSave} disabled={loading}>
-        {loading ? "Saving..." : "Save"}
-      </button>
+          <div className="mt-6 flex gap-4">
+            <button className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition">
+              View
+            </button>
+            <button className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition">
+              Edit
+            </button>
+            <button className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition">
+              Share
+            </button>
+          </div>
+        </GlassCard>
+      </main>
     </div>
   );
 }
