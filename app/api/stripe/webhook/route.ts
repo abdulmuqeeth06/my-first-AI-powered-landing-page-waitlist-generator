@@ -15,9 +15,7 @@ export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
 
   try {
-    const stripe = new Stripe(STRIPE_SECRET_KEY, {
-      apiVersion: "2024-11-20.acacia",
-    });
+    const stripe = new Stripe(STRIPE_SECRET_KEY);
     const event = stripe.webhooks.constructEvent(
       body,
       signature || "",
