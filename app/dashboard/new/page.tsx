@@ -9,11 +9,14 @@ export default function NewLandingPage() {
   const supabase = getSupabaseClient();
 
   const [productName, setProductName] = useState("");
+  const [description, setDescription] = useState("");
   const [headline, setHeadline] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
     setError(null);
+    setLoading(true);
 
     const {
       data: { user },
@@ -21,30 +24,44 @@ export default function NewLandingPage() {
 
     if (!user) {
       setError("Not authenticated");
+      setLoading(false);
       return;
     }
 
     const { error } = await supabase.from("landing_pages").insert({
       user_id: user.id,
       product_name: productName,
+      description,
       headline,
     });
+
+    setLoading(false);
 
     if (error) {
       setError(error.message);
     } else {
-      alert("Saved");
+      alert("Landing page saved");
+      setProductName("");
+      setDescription("");
+      setHeadline("");
     }
   };
 
   return (
-    <div style={{ padding: 40 }}>
+    <div style={{ padding: 40, maxWidth: 600 }}>
       <h1>New Landing Page</h1>
 
       <input
         placeholder="Product name"
         value={productName}
         onChange={(e) => setProductName(e.target.value)}
+      />
+      <br />
+
+      <textarea
+        placeholder="Short description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
       <br />
 
@@ -57,7 +74,9 @@ export default function NewLandingPage() {
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <button onClick={handleSave}>Save</button>
+      <button onClick={handleSave} disabled={loading}>
+        {loading ? "Saving..." : "Save"}
+      </button>
     </div>
   );
 }
