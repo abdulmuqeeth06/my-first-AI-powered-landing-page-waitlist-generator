@@ -3,8 +3,20 @@ export const dynamic = "force-dynamic";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSupabaseBrowserClient } from "@/lib/supabaseClient";
+import { getSupabaseBrowserClient } from "@/lib/supabaseBrowser";
 import { Button } from "@/components/ui/button";
+
+type LandingPageInsert = {
+  user_id: string;
+  product_name: string;
+  description: string;
+  audience: string;
+  pricing: string;
+  slug: string;
+  headline: string;
+  subheadline: string;
+  benefits: string[];
+};
 
 type GeneratedCopy = {
   headline: string;
@@ -61,19 +73,27 @@ export default function NewLandingPage() {
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/(^-|-$)+/g, "") || `page-${Date.now()}`;
 
-      const { error: insertError } = await supabase.from("landing_pages").insert({
-        user_id: userId,
-        product_name: productName,
-        description,
-        audience,
-        pricing,
-        slug,
-        headline: copy.headline,
-        subheadline: copy.subheadline,
-        benefits: copy.benefits,
-        cta: copy.cta,
-        faq: copy.faq || null,
-      });
+          const headline = "";
+const subheadline = "";
+const benefits: string[] = [];
+
+
+      const { error: insertError } = await (supabase
+  .from("landing_pages") as any)
+  .insert([
+    {
+      user_id: userId,
+      product_name: productName,
+      description,
+      audience,
+      pricing,
+      slug,
+      headline,
+      subheadline,
+      benefits,
+    } as LandingPageInsert,
+  ]);
+
 
       if (insertError) {
         throw new Error(insertError.message);

@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSupabaseBrowserClient } from "@/lib/supabaseClient";
+import { getSupabaseBrowserClient } from "@/lib/supabaseBrowser";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
