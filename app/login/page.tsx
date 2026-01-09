@@ -1,5 +1,8 @@
 "use client";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
