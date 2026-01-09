@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,8 @@ type GeneratedCopy = {
 };
 
 export default function NewLandingPage() {
+      const supabase = useMemo(() => getSupabaseBrowserClient(), []);
   const router = useRouter();
-  const supabase = getSupabaseBrowserClient();
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
   const [audience, setAudience] = useState("");
